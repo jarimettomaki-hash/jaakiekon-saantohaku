@@ -1,21 +1,22 @@
-# Jääkiekon sääntöhaku 2026–2027
+# Sääntökirja (2026–2027)
 
-Mobiiliystävällinen, itsenäinen sääntöjen hakemisto ja rangaistusluettelo.
+Mobiilisovellus sääntökirjan hakemiseen omasta PDF-tiedostosta. Ei ulkoisen sääntökirjasovelluksen linkkejä.
 
-## Ominaisuudet
-- 92 sääntönimikettä ja -numeroa
-- Haku numerolla, nimellä ja hakusanoilla
-- Rangaistusten ryhmittely
-- Suosikit selaimen paikalliseen tallennustilaan
-- PWA: asennus puhelimen aloitusnäyttöön ja hakemiston offline-käyttö
+## Näin käytät
+1. Avaa julkaistu GitHub Pages -sovellus puhelimella verkkoyhteydessä.
+2. Valitse **Valitse sääntökirjan PDF** ja osoita omaan PDF-tiedostoosi.
+3. Odota, että kaikki sivut on indeksoitu.
+4. Etsi sanoja, useita sanoja tai sääntönumeroita. Haku koskee PDF:n todellista tekstiä.
+5. Avaa hakutulos. Saat sivun tekstin ja voit avata sivun PDF-muodossa sovelluksen sisällä.
+6. **Rangaistukset**-välilehti tarjoaa rangaistuksia käsittelevät sivut ja niihin kohdistuvan hakutoiminnon. **Suosikit** tallentavat sivuja.
 
-## Julkaiseminen GitHub Pagesissa
-1. Avaa GitHubissa **Settings → Pages**.
-2. Valitse **Build and deployment → Source: Deploy from a branch**.
-3. Valitse **Branch: main**, **Folder: / (root)** ja paina **Save**.
-4. Julkinen osoite on tämän jälkeen yleensä https://jarimettomaki-hash.github.io/jaakiekon-saantohaku/
+## Offline
+Palvelutyöntekijä välimuistittaa käyttöliittymän sekä PDF.js-kirjaston ja sen workerin. Oma PDF ja indeksoitu teksti tallentuvat selaimen IndexedDB-tietokantaan. Kun sovellus ja kirjastot ovat latautuneet sekä PDF on tuotu onnistuneesti, haku toimii offline-tilassa samalla laitteella ja selainprofiililla. Selaintietojen tyhjentäminen tai tallennustilan automaattinen poisto voi poistaa datan. Puhelimen selaimen tarjoamat PWA-asennusmahdollisuudet vaihtelevat.
 
-## Lähde
-[SJL-sääntökirja 2026–2027](https://www.dropbox.com/scl/fi/7ukh2ulgx10ybzl10edfl/SJL-s-nt-kirja-2026-2027_v1.1_05102026.pdf?rlkey=3r3fed7v7znk6qijlw59toxmd&st=s1uqdbhq&dl=1)
+## Julkaisu GitHub Pagesissa
+Settings → Pages → Deploy from a branch → main / (root).
 
-Sovellus on itsenäinen hakemisto, **ei virallinen sääntökirja eikä täydellinen sääntötekstin kopio**. Tarkista rangaistusseuraamukset ja poikkeukset alkuperäisestä sääntökirjasta. Projekti ei ole Suomen Jääkiekkoliiton virallinen julkaisu.
+Sovellus: https://jarimettomaki-hash.github.io/jaakiekon-saantohaku/
+
+## Lähde ja tekijänoikeudet
+Käyttäjän toimittama sääntökirja (2026–2027). Sovellus ei sisällä eikä julkaise dokumentin koko tekstiä, vaan tuo käyttäjän oman PDF-kopion paikallisesti ja tekee sen hakukelpoiseksi. Dokumentin tekijänoikeudet säilyvät oikeudenhaltijoilla. Sovellus ei ole sääntökirjan virallinen julkaisu.
