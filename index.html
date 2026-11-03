@@ -105,7 +105,35 @@ if(tab==='about'){$('#about').innerHTML='<div class="panel"><h2>Ohjeet</h2><p>Li
 if(!pages.length){$('#results').innerHTML='<div class="empty">Lisää ensin sääntökirjan PDF, jotta haku toimii koko dokumentissa.</div>';return}
 let entries;if(tab==='favorites')entries=[...favorites].sort((a,b)=>a-b).map(n=>pages.find(p=>p.n===n)).filter(Boolean);else if(tab==='penalties'){let q=term.trim();entries=q?findHits():pages.filter(p=>/RANGAISTUS|RIKKEET|TAKLAUS|KAMPITUS|KOUKKAAMINEN|HUITOMINEN|KEIHÄSTÄMINEN|ESTÄMINEN/i.test(p.text)).map(p=>({...p,count:0,rank:0}))}else entries=findHits();
 let found=entries.length;$('#results').innerHTML=(tab==='search'&&!term?tocHTML():'')+'<div class="result-top"><strong>'+(tab==='favorites'?'Suosikkisivut':tab==='penalties'&&!term?'Rangaistuksia käsittelevät sivut':'Hakutulokset')+'</strong><span class="count">'+found+' sivua</span></div>'+(found?'<div class="results">'+entries.map(p=>'<button class="hit" data-page="'+p.n+'"><div class="row space"><strong>Sivu '+p.n+'</strong><span class="tag">'+(tab==='favorites'?'★ tallennettu':p.count?p.count+' osumaa':'Rangaistukset')+'</span></div><p class="excerpt">'+(term?highlight(snippet(p.text,term),term):esc(p.text.slice(0,210).replace(/\s+/g,' '))+'…')+'</p></button>').join('')+'</div>':'<div class="empty">'+(term?'Ei hakutuloksia. Kokeile eri taivutusmuotoa tai lyhyempää hakusanaa.':'Kirjoita hakusana, esimerkiksi kampitus, 57.2 tai korkea maila.')+'</div>');}
-async function showCanvas(n){let area=$('#pdfArea');area.innerHTML='<p class="status">Avataan PDF-sivua…</p>';try{if(!doc){if(!bytes)throw Error('PDF ei ole tallennettu');await openPDF(bytes)}let page=await doc.getPage(n),vp=page.getViewport({scale:1}),available=area.clientWidth||400,scale=Math.min(2,available/vp.width),view=page.getViewport({scale}),canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');canvas.width=Math.round(view.width);canvas.height=Math.round(view.height);canvas.style.width='100%';canvas.style.height='auto';await page.render({canvasContext:ctx,viewport:view}).promise;area.replaceChildren(canvas)}catch(e){area.textContent='PDF-sivua ei voitu näyttää: '+e.message}}
+async function showCanvas(n){
+ let area=$('#pdfArea');area.innerHTML='<p class="status">Avataan PDF-sivua…</p>';
+ try{
+  if(!doc){if(!bytes)throw Error('PDF ei ole tallennettu');await openPDF(bytes)}
+  const page=await doc.getPage(n),base=page.getViewport({scale:1}),width=area.clientWidth||400,scale=Math.min(2,width/base.width),viewport=page.getViewport({scale});
+  const canvas=document.createElement('canvas'),ctx=canvas.getContext('2d');
+  canvas.width=Math.round(viewport.width);canvas.height=Math.round(viewport.height);canvas.style.width='100%';canvas.style.height='auto';
+  await page.render({canvasContext:ctx,viewport}).promise;
+  const wrapper=document.createElement('div');wrapper.style.cssText='position:relative;width:100%;max-width:'+canvas.width+'px';
+  wrapper.appendChild(canvas);area.replaceChildren(wrapper);
+  const annotations=await page.getAnnotations({intent:'display'});
+  for(const ann of annotations){
+   if(ann.subtype!=='Link'||!ann.dest||!ann.rect)continue;
+   const rect=viewport.convertToViewportRectangle(ann.rect);
+   const left=Math.min(rect[0],rect[2]),top=Math.min(rect[1],rect[3]);
+   let link=document.createElement('button');link.type='button';link.setAttribute('aria-label','Siirry PDF:n sisäiseen linkkikohteeseen');
+   link.title='Siirry sääntökirjan linkkikohteeseen';
+   link.style.cssText='position:absolute;left:'+left+'px;top:'+top+'px;width:'+Math.abs(rect[2]-rect[0])+'px;height:'+Math.abs(rect[3]-rect[1])+'px;background:transparent;border:0;cursor:pointer;';
+   link.addEventListener('click',async()=>{
+    try{
+     let dest=typeof ann.dest==='string'?await doc.getDestination(ann.dest):ann.dest;
+     if(!Array.isArray(dest))return;
+     const pageNumber=typeof dest[0]==='object'?await doc.getPageIndex(dest[0])+1:Number(dest[0])+1;
+     if(pageNumber>=1&&pageNumber<=pages.length)goPage(pageNumber);
+    }catch(error){console.warn('Linkkikohteen avaaminen epäonnistui',error)}
+   });wrapper.appendChild(link);
+  }
+ }catch(e){area.textContent='PDF-sivua ei voitu näyttää: '+e.message}
+}
 $('#query').addEventListener('input',e=>{term=e.target.value;render()});document.addEventListener('click',e=>{let ex=e.target.closest('[data-example]');if(ex){term=ex.dataset.example;$('#query').value=term;render();return}let rl=e.target.closest('[data-rule]');if(rl){e.preventDefault();goRule(rl.dataset.rule);return}let page=e.target.closest('[data-page]');if(page){goPage(Number(page.dataset.page));return}let t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;detail=null;navHistory=[];targetRule=null;if(tab==='penalties'){$('#query').placeholder='Esim. kampitus, iso rangaistus'}else $('#query').placeholder='Esim. 57.2, kampitus tai korkea maila';render();window.scrollTo(0,0)}});
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
 restore();
