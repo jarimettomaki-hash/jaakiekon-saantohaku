@@ -1,4 +1,4 @@
-const CACHE='saantokirja-offline-v3';
+const CACHE='saantokirja-offline-v4';
 const LOCAL=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 const EXTERNAL=['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs'];
 self.addEventListener('install',event=>{
