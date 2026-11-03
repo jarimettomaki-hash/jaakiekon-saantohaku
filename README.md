@@ -1,0 +1,2 @@
+# jaakiekon-saantohaku
+SJL sääntökirja
