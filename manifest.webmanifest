@@ -1,11 +1,12 @@
 {
-  "name": "Jääkiekon sääntöhaku 2026–2027",
-  "short_name": "Sääntöhaku",
+  "name": "Sääntökirja",
+  "short_name": "Sääntökirja",
+  "description": "Sääntökirjan offline-haku omasta PDF-tiedostosta",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#081527",
-  "theme_color": "#0b1e36",
+  "background_color": "#071626",
+  "theme_color": "#102943",
   "lang": "fi",
   "icons": [
     {
